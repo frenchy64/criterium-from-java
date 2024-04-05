@@ -1,4 +1,5 @@
 (defproject com.ambrosebs/criterium-from-java "0.1.0-SNAPSHOT"
+  ;; make sure version is synced with test project
   :description "Running Clojure's criterium from other JVM languages."
   :url "https://github.com/frenchy64/criterium-from-java"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"

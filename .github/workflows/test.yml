@@ -26,3 +26,7 @@ jobs:
           cache: maven
       - name: Run tests
         run: ./run.sh
+      - name: Run test project
+        run: |
+          cd test-project
+          ./run.sh
