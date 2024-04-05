@@ -3,12 +3,16 @@
 Clojure's [criterium](https://github.com/hugoduncan/criterium/) is a great library for microbenchmarking on the JVM.
 This repo shows how use it for other JVM languages via Java.
 
-## Usage
+It involves adding dependencies to your pom.xml and copying one Java file into
+your project. You will then customize a method in that file to call your
+benchmark via a Runnable.
+
+## Example
 
 There is an example benchmark that is run via Maven.
 
 ```
-./run.sh
+$ ./run.sh
 [INFO] Scanning for projects...
 [INFO]
 [INFO] -----------------------< crit-bench:crit-bench >------------------------
