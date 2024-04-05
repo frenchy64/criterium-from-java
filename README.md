@@ -68,7 +68,14 @@ See pom.xml for extra dependencies needed:
   </dependencies>
 ```
 
-## Example
+## How to make your own benchmarks
+
+Copy `java/crit_bench/Main.java` into your project.
+
+Redefine `crit_bench.Main.myBenchmark()` to return a Runnable
+that runs your benchmark. Now call `crit_bench.Main.entry()` to
+run your benchmark, or use `crit_bench.Main.main(String[])` if you
+need a main method.
 
 ## License
 

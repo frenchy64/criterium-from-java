@@ -26,8 +26,12 @@ public class Main {
     };
   }
 
-  // boilerplate
+  // boilerplate from here
   public static void main(String args[]) {
+    entry();
+  }
+
+  public static void entry() {
     // boilerplate loading up criterium
     IFn require = Clojure.var("clojure.core", "require");
     require.invoke(Clojure.read("criterium.core"));
