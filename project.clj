@@ -6,7 +6,9 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [criterium "0.4.6"]]
   :java-source-paths ["java"]
-  :main com.ambrosebs.criterium_from_java.Main
+  :main com.ambrosebs.criterium_from_java.Criterium
+  :deploy-repositories [["releases" :clojars]
+                        ["snapshots" :clojars]]
   :pom-addition [:properties
                   ["maven.compiler.source" "1.8"]
                   ["maven.compiler.target" "1.8"]]

@@ -3,7 +3,7 @@ package com.ambrosebs.criterium_from_java;
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;
 
-public class Main {
+public class Criterium {
 
   /**
    * Example benchmark of (* 10 2) in Clojure.
