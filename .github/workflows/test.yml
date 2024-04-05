@@ -1,0 +1,28 @@
+---
+name: Run tests
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-clj:
+    strategy:
+      matrix:
+        # Supported Java versions: LTS releases and latest
+        jdk: [8, 11, 17, 22]
+
+    name: Java ${{ matrix.jdk }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java ${{ matrix.jdk }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.jdk }}
+          cache: maven
+      - name: Run tests
+        run: ./run.sh
