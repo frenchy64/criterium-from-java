@@ -4,7 +4,7 @@
   <groupId>com.ambrosebs</groupId>
   <artifactId>criterium-from-java</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>criterium-from-java</name>
   <description>Running Clojure's criterium from other JVM languages.</description>
   <url>https://github.com/frenchy64/criterium-from-java</url>
@@ -18,7 +18,7 @@
     <url>https://github.com/frenchy64/criterium-from-java</url>
     <connection>scm:git:git://github.com/frenchy64/criterium-from-java.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/frenchy64/criterium-from-java.git</developerConnection>
-    <tag>2ff7b20a658a60fb894620b0f9406687708c1f93</tag>
+    <tag>eb94180dea1c7facb29ae90482e7c97d5b00962e</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
