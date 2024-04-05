@@ -17,7 +17,7 @@ public class Main {
   // makes sure we've compiled and loaded everything non-benchmark related
   // before returning the runnable (which you should do too).
   public static Runnable myBenchmark() {
-    IFn cljBenchmark = (IFn)eval("(clojure.core/fn [] (clojure.core/* 10 2))");
+    final IFn cljBenchmark = (IFn)eval("(clojure.core/fn [] (clojure.core/* 10 2))");
     return new Runnable() {
       public void run() {
         // call benchmark here
