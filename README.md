@@ -1,11 +1,53 @@
 # Running Criterium benchmarks from Java and Maven
 
 Clojure's [criterium](https://github.com/hugoduncan/criterium/) is a great library for microbenchmarking on the JVM.
-This repo shows how use it for other JVM languages via Java.
+This project packages it up for use from other JVM languages.
 
-It involves adding dependencies to your pom.xml and copying one Java file into
-your project. You will then customize a method in that file to call your
-benchmark via a Runnable.
+## API
+
+There is one public method `Criterium.bench(Runnable)`. It takes a runnable that
+runs the benchmark. You should initialize your benchmark (if appropriate) before returning the Runnable.
+
+```java
+package example_benchmark;
+
+import com.ambrosebs.criterium_from_java.Criterium;
+
+public class Main {
+  public static void main(String[] args) {
+    Criterium.bench(new Runnable() {
+      @Override
+      public void run() {
+        java.util.UUID.randomUUID();
+        ("string"+"concatenation"+"benchmark").length();
+      }
+    });
+  }
+}
+```
+
+## Maven Dependency information
+
+```
+...
+    <repository>
+      <id>clojars</id>
+      <url>https://repo.clojars.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+...
+    <dependency>
+      <groupId>com.ambrosebs</groupId>
+      <artifactId>criterium-from-java</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+```
+
 
 ## Example
 
