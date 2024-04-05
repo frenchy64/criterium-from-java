@@ -90,35 +90,6 @@ Found 2 outliers in 60 samples (3.3333 %)
 [INFO] ------------------------------------------------------------------------
 ```
 
-
-## Dependencies
-
-See pom.xml for extra dependencies needed:
-
-```xml
-  <dependencies>
-    <dependency>
-      <groupId>org.clojure</groupId>
-      <artifactId>clojure</artifactId>
-      <version>1.11.1</version>
-    </dependency>
-    <dependency>
-      <groupId>criterium</groupId>
-      <artifactId>criterium</artifactId>
-      <version>0.4.6</version>
-    </dependency>
-  </dependencies>
-```
-
-## How to make your own benchmarks
-
-Copy `java/crit_bench/Main.java` into your project.
-
-Redefine `crit_bench.Main.myBenchmark()` to return a Runnable
-that runs your benchmark. Now call `crit_bench.Main.entry()` to
-run your benchmark, or use `crit_bench.Main.main(String[])` if you
-need a main method.
-
 ## License
 
 Copyright © 2024 Ambrose Bonnaire-Sergeant
