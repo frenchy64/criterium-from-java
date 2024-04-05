@@ -8,8 +8,16 @@ public class Main {
   // # Configuration
   // print intermediate benchmark logging?
   public static boolean verboseInProgress = true;
-  // print more verbose benchmark summary? such as OS+JDK
-  public static boolean verboseResult = true;
+  // benchmark configuration map
+  // :verbose = more verbose benchmark summary, such as OS+JDK
+  // default config:
+  //   {:max-gc-attempts 100
+  //    :samples 60
+  //    :target-execution-time 1000000000 ;; in ns
+  //    :warmup-jit-period 10000000000 ;; in ns
+  //    :tail-quantile 0.025
+  //    :bootstrap-size 1000}
+  public static String verboseResult = "{:verbose true}";
 
   // # Your benchmark
   // replace this method with your benchmark, wrapped in a Runnable.
@@ -66,7 +74,7 @@ public class Main {
   }
 
   public static void runBenchmark(Runnable r) {
-    IFn runner = (IFn)eval("(clojure.core/fn [progress? verbose? ^java.lang.Runnable r] (clojure.core/cond-> (criterium.core/benchmark (.run r) {:verbose verbose?}) progress? criterium.core/with-progress-reporting))");
-    runner.invoke(verboseInProgress, verboseResult, r);
+    IFn runner = (IFn)eval("(clojure.core/fn [progress? opts ^java.lang.Runnable r] (clojure.core/let [f #(criterium.core/benchmark (.run r) opts)] (if progress? (criterium.core/with-progress-reporting (f)) (f))))");
+    runner.invoke(verboseInProgress, read(verboseResult), r);
   }
 }
