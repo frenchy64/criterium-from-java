@@ -5,6 +5,11 @@ import clojure.lang.IFn;
 
 public class Main {
 
+  /**
+   * Example benchmark of (* 10 2) in Clojure.
+   *
+   * Demonstrates how to use bench(Runnable) to kick off benchmarking.
+   **/
   public static void main(String args[]) {
     System.out.println("Running example benchmark ");
     final IFn cljBenchmark = (IFn)eval("(fn [] (* 10 2))");
@@ -16,6 +21,11 @@ public class Main {
     });
   }
 
+  /**
+   * Run criterium benchmarking on provided benchmark with verbose printing.
+   *
+   * @r a runnable benchmark
+   **/
   public static void bench(Runnable r) {
     bench(r, true, "{:verbose true}");
   }
@@ -57,7 +67,6 @@ public class Main {
     return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/eval '(clojure.core/ns crit-bench.main (:require [criterium.core :as b]))) (clojure.core/eval (clojure.core/read-string \""+s+"\")))"));
   }
 
-  //boilerplate wrapping an IFn
   public static IFn runnableToIFn(Runnable r) {
     return (IFn)eval("(fn [^Runnable r] (.run r))");
   }
