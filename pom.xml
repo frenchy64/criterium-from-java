@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>crit-bench</groupId>
-  <artifactId>crit-bench</artifactId>
+  <groupId>com.ambrosebs</groupId>
+  <artifactId>criterium-from-java</artifactId>
   <packaging>jar</packaging>
   <version>0.1.0-SNAPSHOT</version>
-  <name>crit-bench</name>
-  <description>FIXME: write description</description>
-  <url>http://example.com/FIXME</url>
+  <name>criterium-from-java</name>
+  <description>Running Clojure's criterium from other JVM languages.</description>
+  <url>https://github.com/frenchy64/criterium-from-java</url>
   <licenses>
     <license>
       <name>EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0</name>
@@ -18,7 +18,7 @@
     <url>https://github.com/frenchy64/criterium-from-java</url>
     <connection>scm:git:git://github.com/frenchy64/criterium-from-java.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/frenchy64/criterium-from-java.git</developerConnection>
-    <tag>5b46e2063b4e1899883731ca7e615113dabb0213</tag>
+    <tag>81983e600bc48db6cabb53085d7e8d18a3689270</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
