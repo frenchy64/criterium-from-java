@@ -74,7 +74,7 @@ public class Main {
   }
 
   public static void runBenchmark(Runnable r) {
-    IFn runner = (IFn)eval("(clojure.core/fn [progress? opts ^java.lang.Runnable r] (clojure.core/let [f #(criterium.core/benchmark (.run r) opts)] (if progress? (criterium.core/with-progress-reporting (f)) (f))))");
+    IFn runner = (IFn)eval("(clojure.core/fn [progress? opts ^java.lang.Runnable r] (criterium.core/report-result (clojure.core/let [f #(criterium.core/benchmark (.run r) opts)] (if progress? (criterium.core/with-progress-reporting (f)) (f))) (if (:verbose opts) :verbose)))");
     runner.invoke(verboseInProgress, read(verboseResult), r);
   }
 }
