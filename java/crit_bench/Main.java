@@ -5,11 +5,26 @@ import clojure.lang.IFn;
 
 public class Main {
 
+  public static void main(String args[]) {
+    System.out.println("Running example benchmark ");
+    final IFn cljBenchmark = (IFn)eval("(fn [] (* 10 2))");
+    bench(new Runnable() {
+      public void run() {
+        // call benchmark here
+        cljBenchmark.invoke();
+      }
+    });
+  }
+
+  public static void bench(Runnable r) {
+    bench(r, true, "{:verbose true}");
+  }
+
   // # Configuration
-  // print intermediate benchmark logging?
-  public static boolean verboseInProgress = true;
+  // @verboseInProgress if true, print in-progress results of the benchmarking
   // benchmark configuration map
   // :verbose = more verbose benchmark summary, such as OS+JDK
+  //
   // default config:
   //   {:max-gc-attempts 100
   //    :samples 60
@@ -17,64 +32,38 @@ public class Main {
   //    :warmup-jit-period 10000000000 ;; in ns
   //    :tail-quantile 0.025
   //    :bootstrap-size 1000}
-  public static String verboseResult = "{:verbose true}";
-
-  // # Your benchmark
-  // replace this method with your benchmark, wrapped in a Runnable.
-  // the example implementation benchmarks (* 10 2) in clojure, but
-  // makes sure we've compiled and loaded everything non-benchmark related
-  // before returning the runnable (which you should do too).
-  public static Runnable myBenchmark() {
-    final IFn cljBenchmark = (IFn)eval("(clojure.core/fn [] (clojure.core/* 10 2))");
-    return new Runnable() {
-      public void run() {
-        // call benchmark here
-        cljBenchmark.invoke();
-      }
-    };
-  }
-
-  // boilerplate from here
-  public static void main(String args[]) {
-    entry();
-  }
-
-  public static void entry() {
-    // boilerplate loading up criterium
-    IFn require = Clojure.var("clojure.core", "require");
-    require.invoke(Clojure.read("criterium.core"));
-    IFn benchmark = Clojure.var("criterium.core", "benchmark*");
-    IFn reportResult = Clojure.var("criterium.core", "report-result");
+  public static void bench(Runnable r, boolean verboseInProgress, String ednConfig) {
     // if you see reflection warnings, there's a problem and results will not be valid
-    eval("(clojure.core/alter-var-root #'clojure.core/*warn-on-reflection* (clojure.core/fn [_] true))");
+    eval("(alter-var-root #'*warn-on-reflection* (fn [_] true))");
 
     System.out.println("Setting up the benchmark");
 
     //boilerplate kicking off the benchmark and reporting results
     System.out.println("Ready to run!");
     System.out.println("Running...");
-    runBenchmark(myBenchmark());
+    runBenchmark(r, verboseInProgress, ednConfig);
     System.out.println("Done!");
   }
 
   public static Object read(String s) {
+    IFn evalVar = Clojure.var("clojure.core", "eval");
     IFn readStringVar = Clojure.var("clojure.core", "read-string");
-    return readStringVar.invoke(s);
+    IFn readIn = (IFn)evalVar.invoke(readStringVar.invoke("(clojure.core/fn [s] (clojure.core/binding [*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/read-string s)))"));
+    return readIn.invoke(s);
   }
 
   public static Object eval(String s) {
     IFn evalVar = Clojure.var("clojure.core", "eval");
-    IFn readStringVar = Clojure.var("clojure.core", "read-string");
-    return evalVar.invoke(readStringVar.invoke(s));
+    return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/eval '(clojure.core/ns crit-bench.main (:require [criterium.core :as b]))) (clojure.core/eval (clojure.core/read-string \""+s+"\")))"));
   }
 
   //boilerplate wrapping an IFn
   public static IFn runnableToIFn(Runnable r) {
-    return (IFn)eval("(clojure.core/fn [^java.lang.Runnable r] (.run r))");
+    return (IFn)eval("(fn [^Runnable r] (.run r))");
   }
 
-  public static void runBenchmark(Runnable r) {
-    IFn runner = (IFn)eval("(clojure.core/fn [progress? opts ^java.lang.Runnable r] (criterium.core/report-result (clojure.core/let [f #(criterium.core/benchmark (.run r) opts)] (if progress? (criterium.core/with-progress-reporting (f)) (f))) (if (:verbose opts) :verbose)))");
-    runner.invoke(verboseInProgress, read(verboseResult), r);
+  public static void runBenchmark(Runnable r, boolean verboseInProgress, String ednConfig) {
+    IFn runner = (IFn)eval("(fn [progress? opts ^java.lang.Runnable r] (b/report-result (let [f #(b/benchmark (.run r) opts)] (if progress? (b/with-progress-reporting (f)) (f))) (if (:verbose opts) :verbose)))");
+    runner.invoke(verboseInProgress, read(ednConfig), r);
   }
 }
