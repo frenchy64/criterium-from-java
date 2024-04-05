@@ -1,4 +1,4 @@
-package crit_bench;
+package com.ambrosebs.criterium_from_java;
 
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;

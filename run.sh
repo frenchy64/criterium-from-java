@@ -4,4 +4,4 @@ set -e
 
 mvn clean
 mvn compile
-mvn exec:java -Dexec.mainClass="crit_bench.Main"
+mvn exec:java -Dexec.mainClass="com.ambrosebs.criterium_from_java.Main"
