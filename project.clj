@@ -7,4 +7,7 @@
                  [criterium "0.4.6"]]
   :java-source-paths ["java"]
   :main crit_bench.Main
+  :pom-addition [:properties
+                  ["maven.compiler.source" "1.8"]
+                  ["maven.compiler.target" "1.8"]]
   :repl-options {:init-ns crit-bench.core})
