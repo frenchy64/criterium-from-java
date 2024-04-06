@@ -58,7 +58,7 @@ public class Criterium {
   private static Object read(String s) {
     IFn evalVar = Clojure.var("clojure.core", "eval");
     IFn readStringVar = Clojure.var("clojure.core", "read-string");
-    IFn readIn = (IFn)evalVar.invoke(readStringVar.invoke("(clojure.core/fn [s] (clojure.core/binding [*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/read-string s)))"));
+    IFn readIn = (IFn)evalVar.invoke(readStringVar.invoke("(clojure.core/fn [s] (clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/read-string s)))"));
     return readIn.invoke(s);
   }
 
@@ -72,7 +72,7 @@ public class Criterium {
   }
 
   private static void runBenchmark(Runnable r, boolean verboseInProgress, String ednConfig) {
-    IFn runner = (IFn)eval("(fn [progress? opts ^java.lang.Runnable r] (b/report-result (let [f #(b/benchmark (.run r) opts)] (if progress? (b/with-progress-reporting (f)) (f))) (if (:verbose opts) :verbose)))");
+    IFn runner = (IFn)eval("(fn [progress? opts ^java.lang.Runnable r] (b/report-result (let [f #(b/benchmark (.run r) opts)] (if progress? (b/with-progress-reporting (f)) (f))) (if (:verbose opts) :verbose) (flush)))");
     runner.invoke(verboseInProgress, read(ednConfig), r);
   }
 }
