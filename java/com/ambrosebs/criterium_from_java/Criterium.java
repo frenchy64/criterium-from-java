@@ -12,7 +12,7 @@ public class Criterium {
    **/
   public static void main(String args[]) {
     System.out.println("Running example benchmark ");
-    final IFn cljBenchmark = (IFn)eval("(fn [] (* 10 2))");
+    final IFn cljBenchmark = (IFn)eval("#(* 10 2)");
     bench(new Runnable() {
       public void run() {
         // call benchmark here
