@@ -81,7 +81,7 @@
     <dependency>
       <groupId>com.ambrosebs</groupId>
       <artifactId>criterium-from-java</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 </project>
