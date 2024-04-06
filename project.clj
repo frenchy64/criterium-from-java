@@ -1,4 +1,4 @@
-(defproject com.ambrosebs/criterium-from-java "1.0.0"
+(defproject com.ambrosebs/criterium-from-java "1.0.1-SNAPSHOT"
   ;; make sure version is synced with test project
   :description "Running Clojure's criterium from other JVM languages."
   :url "https://github.com/frenchy64/criterium-from-java"
