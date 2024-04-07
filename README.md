@@ -1,5 +1,7 @@
 # Running Criterium benchmarks from Java and Maven
 
+[![Clojars Project](https://img.shields.io/clojars/v/com.ambrosebs/criterium-from-java.svg)](https://clojars.org/com.ambrosebs/criterium-from-java)
+
 Clojure's [criterium](https://github.com/hugoduncan/criterium/) is a great library for microbenchmarking on the JVM.
 This project packages it up for use from other JVM languages.
 
@@ -44,7 +46,7 @@ public class Main {
     <dependency>
       <groupId>com.ambrosebs</groupId>
       <artifactId>criterium-from-java</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
 ...
 ```
