@@ -13,6 +13,8 @@ import java.util.concurrent.Callable;
  * "quick"  - if true, run a less rigorous benchmark (higher uncertainty)
  * "debug"  - if true, enable criterium debug printing
  * "warn"   - if true, enable criterium warning printing
+ * "print-raw-result"  - if true, print raw result map from criterium
+ * "print-result"  - if true, print result map from criterium-from-java (without "raw-result" field, see "print-raw-result")
  * "max-gc-attempts"  - default 100
  * "samples" - default 60, 6 for quick benchmarks
  * "target-execution-time" - default 100000000
@@ -39,6 +41,7 @@ import java.util.concurrent.Callable;
  * "upper-q"
  * "outlier-variance"
  * "runtime-details"
+ * "raw-result" - the actual result from criterium
  **/
 public class Criterium {
 
@@ -55,7 +58,7 @@ public class Criterium {
         return 10*2;
       }
     };
-    Map benchResults = quickBench(myBench);
+    Map benchResults = bench(myBench, "{:print-result true :print-raw-result true :quick true}");
     System.out.println("\nReturns a map of results for programmatic manipulation.");
     System.out.println("For example, benchmark run 5 return this value:");
     List results = (List)benchResults.get("results");
@@ -119,7 +122,7 @@ public class Criterium {
     IFn runner = (IFn)eval(
         "(fn [^Callable c s-opts]"+
         "  (let [s-opts (if (string? s-opts) (edn/read-string s-opts) (into {} s-opts))"+
-        "        {:keys [progress quick debug warn max-gc-attempts final-gc-problem-threshold] :as opts} (update-keys s-opts keyword)"+
+        "        {:keys [progress quick debug warn max-gc-attempts final-gc-problem-threshold print-raw-result print-result] :as opts} (update-keys s-opts keyword)"+
         "        benchmark (if quick b/quick-benchmark* b/benchmark*)"+
         "        res (with-bindings (cond-> {}"+
         "                             progress (assoc #'b/*report-progress* true)"+
@@ -127,14 +130,17 @@ public class Criterium {
         "                             max-gc-attempts (assoc #'b/*max-gc-attempts* max-gc-attempts)"+
         "                             final-gc-problem-threshold (assoc #'b/*final-gc-problem-threshold* final-gc-problem-threshold)"+
         "                             warn (assoc #'b/*report-warn* true))"+
-        "              (benchmark #(.call c) (dissoc opts :progress :quick :debug :warn :final-gc-problem-threshold)))"+
+        "              (benchmark #(.call c) (dissoc opts :progress :quick :debug :warn :final-gc-problem-threshold :print-raw-result :print-result)))"+
         "        _ (b/report-result res)"+
         "        {:strs [options] :as stringified} (-> (walk/postwalk (fn [v] (cond-> v (map? v) (update-keys name) (sequential? v) vec)) (dissoc res :results))"+
         "                                              (assoc \"results\" (vec (:results res)))"+
+        "                                              (assoc \"raw-result\" res)"+
         "                                              (update \"options\" #(into s-opts %)))"+
         "        {:strs [serialized-options] :as stringified} (assoc stringified \"serialized-options\" (pr-str options))]"+
         "    (flush)"+ //IMPORTANT!!! results don't get printed otherwise
         "    (println \"To reproduce via bench(Callable, String), use:\" (pr-str serialized-options))"+
+        "    (when print-raw-result (println \"\nRaw result:\") (pp/pprint res))"+
+        "    (when print-result (println \"\nResult:\") (pp/pprint (dissoc stringified \"raw-result\")))"+
         "    stringified))");
     return (Map)runner.invoke(c, config);
   }
@@ -149,6 +155,6 @@ public class Criterium {
   private static Object eval(String s) {
     IFn evalVar = Clojure.var("clojure.core", "eval");
     IFn prStrVar = Clojure.var("clojure.core", "pr-str");
-    return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/eval '(clojure.core/ns crit-bench.main (:require [clojure.edn :as edn] [clojure.walk :as walk] [criterium.core :as b]) (:import [java.util.concurrent Callable]))) (clojure.core/eval (clojure.core/read-string "+(String)prStrVar.invoke(s)+")))"));
+    return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/eval '(clojure.core/ns crit-bench.main (:require [clojure.edn :as edn] [clojure.walk :as walk] [criterium.core :as b] [clojure.pprint :as pp]) (:import [java.util.concurrent Callable]))) (clojure.core/eval (clojure.core/read-string "+(String)prStrVar.invoke(s)+")))"));
   }
 }
