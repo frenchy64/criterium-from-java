@@ -49,25 +49,21 @@ public class Criterium {
    **/
   public static void main(String args[]) {
     System.out.println("Running example benchmark ");
-    Map benchResults = quickBench(new Callable<Integer>() {
+    Callable<Integer> myBench = new Callable<Integer>() {
       public Integer call() throws InterruptedException {
         Thread.sleep(100);
         return 10*2;
       }
-    });
+    };
+    Map benchResults = quickBench(myBench);
     System.out.println("\nReturns a map of results for programmatic manipulation.");
     System.out.println("For example, benchmark run 5 return this value:");
     List results = (List)benchResults.get("results");
     System.out.println(results.get(4).toString());
 
     System.out.println("\nWe can reproduce the same benchmark by copy-pasting the above serialized config string into the Java program.");
-
-    Map reproducedOptions = bench(new Callable<Integer>() {
-      public Integer call() throws InterruptedException {
-        Thread.sleep(100);
-        return 10*2;
-      }
-    },  "{\"quick\" true, \"max-gc-attempts\" 100, \"samples\" 6, \"target-execution-time\" 100000000, \"warmup-jit-period\" 5000000000, \"tail-quantile\" 0.025, \"bootstrap-size\" 500, \"overhead\" 8.253210752367998E-9}");
+    bench(myBench,
+        "{\"quick\" true, \"max-gc-attempts\" 100, \"samples\" 6, \"target-execution-time\" 100000000, \"warmup-jit-period\" 5000000000, \"tail-quantile\" 0.025, \"bootstrap-size\" 500, \"overhead\" 8.253210752367998E-9}");
   }
 
   /**
