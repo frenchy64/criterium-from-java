@@ -2,8 +2,9 @@ package com.ambrosebs.criterium_from_java;
 
 import clojure.java.api.Clojure;
 import clojure.lang.IFn;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Criterium {
@@ -22,8 +23,9 @@ public class Criterium {
       }
     });
     System.out.println("Returns a map of results for programmatic manipulation.");
-    System.out.println("For example, benchmark runs returned these values:");
-    System.out.println(benchResults.get("results").toString());
+    System.out.println("For example, benchmark run 5 return this value:");
+    List results = (List)benchResults.get("results");
+    System.out.println(results.get(4).toString());
   }
 
   /**
@@ -74,17 +76,18 @@ public class Criterium {
     // if you see reflection warnings, there's a problem and results will not be valid
     eval("(alter-var-root #'*warn-on-reflection* (fn [_] true))");
     IFn runner = (IFn)eval(
-        "(fn [^Callable c opts]"+
-        "  (let [{:keys [progress quick debug warn] :as opts} (update-keys opts keyword)"+
+        "(fn [^Callable c s-opts]"+
+        "  (let [{:keys [progress quick debug warn] :as opts} (update-keys s-opts keyword)"+
         "        benchmark (if quick b/quick-benchmark* b/benchmark*)"+
         "        res (with-bindings (cond-> {}"+
         "                             progress (assoc #'b/*report-progress* true)"+
         "                             debug (assoc #'b/*report-debug* true)"+
         "                             warn (assoc #'b/*report-warn* true))"+
-        "              (benchmark #(.call c) opts))"+
+        "              (benchmark #(.call c) (dissoc opts :progress :quick :debug :warn)))"+
         "        _ (b/report-result res)"+
         "        stringified (-> (walk/postwalk (fn [v] (cond-> v (map? v) (update-keys name) (sequential? v) vec)) (dissoc res :results))"+
-        "                        (assoc \"results\" (vec (:results res))))]"+
+        "                        (assoc \"results\" (vec (:results res)))"+
+        "                        (update \"options\" into s-opts))]"+
         "    (flush)"+ //IMPORTANT!!! results don't get printed otherwise
         "    stringified))");
     return (Map)runner.invoke(c, config);
