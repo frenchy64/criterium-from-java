@@ -20,6 +20,8 @@ import java.util.concurrent.Callable;
  * "tail-quantile" - default 0.025
  * "bootstrap-size" - default 1000, 500 for quick benchmarks
  * "overhead" - If you want consistency across JVM processes, set this to a constant value.
+ * "final-gc-problem-threshold" - Fraction of excution time allowed for final cleanup before a warning is issued. Default: 0.01.
+ * "use-mxbean-for-times" - Default false
  *
  * Output results:
  *
@@ -107,13 +109,15 @@ public class Criterium {
     eval("(alter-var-root #'*warn-on-reflection* (fn [_] true))");
     IFn runner = (IFn)eval(
         "(fn [^Callable c s-opts]"+
-        "  (let [{:keys [progress quick debug warn] :as opts} (update-keys s-opts keyword)"+
+        "  (let [{:keys [progress quick debug warn max-gc-attempts] :as opts} (update-keys s-opts keyword)"+
         "        benchmark (if quick b/quick-benchmark* b/benchmark*)"+
         "        res (with-bindings (cond-> {}"+
         "                             progress (assoc #'b/*report-progress* true)"+
         "                             debug (assoc #'b/*report-debug* true)"+
+        "                             max-gc-attempts (assoc #'b/*max-gc-attempts* max-gc-attempts)"+
+        "                             final-gc-problem-threshold (assoc #'b/*final-gc-problem-threshold* final-gc-problem-threshold)"+
         "                             warn (assoc #'b/*report-warn* true))"+
-        "              (benchmark #(.call c) (dissoc opts :progress :quick :debug :warn)))"+
+        "              (benchmark #(.call c) (dissoc opts :progress :quick :debug :warn :final-gc-problem-threshold)))"+
         "        _ (b/report-result res)"+
         "        stringified (-> (walk/postwalk (fn [v] (cond-> v (map? v) (update-keys name) (sequential? v) vec)) (dissoc res :results))"+
         "                        (assoc \"results\" (vec (:results res)))"+
