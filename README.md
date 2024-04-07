@@ -5,8 +5,8 @@ This project packages it up for use from other JVM languages.
 
 ## API
 
-There is one public method `Criterium.bench(Runnable)`. It takes a runnable that
-runs the benchmark. You should initialize your benchmark (if appropriate) before returning the Runnable.
+There is one public method `Criterium.bench(Callable)`. It takes a runnable that
+runs the benchmark. You should initialize your benchmark (if appropriate) before returning the Callable.
 
 ```java
 package example_benchmark;
@@ -15,7 +15,7 @@ import com.ambrosebs.criterium_from_java.Criterium;
 
 public class Main {
   public static void main(String[] args) {
-    Criterium.bench(new Runnable() {
+    Criterium.bench(new Callable() {
       @Override
       public void run() {
         java.util.UUID.randomUUID();
