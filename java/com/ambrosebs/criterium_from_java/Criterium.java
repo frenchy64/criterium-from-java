@@ -7,6 +7,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+/**
+ * Input configuration:
+ *
+ * "quick"  - if true, run a less rigorous benchmark (higher uncertainty)
+ * "debug"  - if true, enable criterium debug printing
+ * "warn"   - if true, enable criterium warning printing
+ * "max-gc-attempts"  - default 100
+ * "samples" - default 60, 6 for quick benchmarks
+ * "target-execution-time" - default 100000000
+ * "warmup-jit-period" - default 5000000000
+ * "tail-quantile" - default 0.025
+ * "bootstrap-size" - default 1000, 500 for quick benchmarks
+ * "overhead" - If you want consistency across JVM processes, set this to a constant value.
+ *
+ * Output results:
+ *
+ * "os-details" - a Map of "arch", "available-processors", "name", "version", sourced from java.lang.management.ManagementFactory.getOperatingSystemMXBean()
+ * "execution-count" - a Long
+ * "options" - the options used for this run, including the defaults. can be passed back as config to bench(Callable, Map) to repeat benchmark.
+ * "sample-mean" - a Double
+ * "mean" - a Long
+ * "tail-quantile" - a Double
+ * "samples"
+ * "variance"
+ * "sample-variance"
+ * "lower-q"
+ * "upper-q"
+ * "outlier-variance"
+ * "runtime-details"
+ **/
 public class Criterium {
 
   /**
