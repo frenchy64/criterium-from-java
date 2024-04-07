@@ -52,30 +52,69 @@ public class Main {
 
 ## Example
 
-There is an example benchmark that is run via Maven.
+There is an example benchmark that is run via Maven. The code looks like this:
 
 ```
-$ ./run.sh
+  /**
+   * Example benchmark of (* 10 2) in Clojure.
+   *
+   * Demonstrates how to use bench(Callable) to kick off benchmarking.
+   **/
+  public static void main(String args[]) {
+    System.out.println("Running example benchmark ");
+    Callable<Integer> myBench = new Callable<Integer>() {
+      public Integer call() throws InterruptedException {
+        Thread.sleep(100);
+        return 10*2;
+      }
+    };
+
+    // takes a configuration map as described in Criterium class javadoc.
+    final Map<Object,Object> config = new HashMap<Object,Object>();
+    config.put("quick", true);
+    config.put("print-result", true);
+    config.put("verbose", true);
+    config.put("progress", true);
+    Map benchResults = bench(myBench, config);
+
+    System.out.println("\nReturns a map of results for programmatic manipulation.");
+    System.out.println("For example, benchmark run 5 return this value:");
+    List results = (List)benchResults.get("results");
+    System.out.println(results.get(4).toString());
+
+    System.out.println("\nWe can reproduce the same benchmark by copy-pasting the above serialized config string into the Java program.");
+
+    // also takes Clojure data, useful to reproduce previous results.
+    bench(myBench,
+        "{\"quick\" true, \"max-gc-attempts\" 100, \"samples\" 6, \"target-execution-time\" 100000000, \"warmup-jit-period\" 5000000000, \"tail-quantile\" 0.025, \"bootstrap-size\" 500, \"overhead\" 8.253210752367998E-9}");
+  }
+```
+
+Here is some example output:
+
+```
+./run.sh
 + mvn clean
 [INFO] Scanning for projects...
 [INFO]
 [INFO] -----------------< com.ambrosebs:criterium-from-java >------------------
-[INFO] Building criterium-from-java 1.0.0-SNAPSHOT
+[INFO] Building criterium-from-java 1.1.0-SNAPSHOT
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO]
 [INFO] --- clean:3.2.0:clean (default-clean) @ criterium-from-java ---
+[INFO] Deleting /Users/ambrose/Projects/criterium-from-java/target
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  0.322 s
-[INFO] Finished at: 2024-04-06T10:18:53-05:00
+[INFO] Total time:  0.271 s
+[INFO] Finished at: 2024-04-07T01:12:38-05:00
 [INFO] ------------------------------------------------------------------------
 + mvn compile
 [INFO] Scanning for projects...
 [INFO]
 [INFO] -----------------< com.ambrosebs:criterium-from-java >------------------
-[INFO] Building criterium-from-java 1.0.0-SNAPSHOT
+[INFO] Building criterium-from-java 1.1.0-SNAPSHOT
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO]
@@ -94,90 +133,90 @@ $ ./run.sh
 [WARNING] source value 8 is obsolete and will be removed in a future release
 [WARNING] target value 8 is obsolete and will be removed in a future release
 [WARNING] To suppress warnings about obsolete options, use -Xlint:-options.
+[INFO] /Users/ambrose/Projects/criterium-from-java/java/com/ambrosebs/criterium_from_java/Criterium.java: /Users/ambrose/Projects/criterium-from-java/java/com/ambrosebs/criterium_from_java/Criterium.java uses unchecked or unsafe operations.
+[INFO] /Users/ambrose/Projects/criterium-from-java/java/com/ambrosebs/criterium_from_java/Criterium.java: Recompile with -Xlint:unchecked for details.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.289 s
-[INFO] Finished at: 2024-04-06T10:18:56-05:00
+[INFO] Total time:  1.330 s
+[INFO] Finished at: 2024-04-07T01:12:41-05:00
 [INFO] ------------------------------------------------------------------------
 + mvn exec:java -Dexec.mainClass=com.ambrosebs.criterium_from_java.Criterium
 [INFO] Scanning for projects...
 [INFO]
 [INFO] -----------------< com.ambrosebs:criterium-from-java >------------------
-[INFO] Building criterium-from-java 1.0.0-SNAPSHOT
+[INFO] Building criterium-from-java 1.1.0-SNAPSHOT
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO]
 [INFO] --- exec:3.2.0:java (default-cli) @ criterium-from-java ---
 Running example benchmark
-Setting up the benchmark
-Ready to run!
-Running...
 Estimating sampling overhead
 Warming up for JIT optimisations 10000000000 ...
-  compilation occurred before 67 iterations
-  compilation occurred before 419928 iterations
-  compilation occurred before 839789 iterations
-  compilation occurred before 2099372 iterations
-  compilation occurred before 2519233 iterations
-  compilation occurred before 2939094 iterations
-  compilation occurred before 7137704 iterations
-  compilation occurred before 10916453 iterations
-  compilation occurred before 16374646 iterations
-  compilation occurred before 22252700 iterations
-  compilation occurred before 23932144 iterations
-  compilation occurred before 25611588 iterations
-  compilation occurred before 31489642 iterations
-  compilation occurred before 39047140 iterations
-  compilation occurred before 47864221 iterations
-  compilation occurred before 52062831 iterations
-  compilation occurred before 52902553 iterations
-  compilation occurred before 54162136 iterations
-  compilation occurred before 74315464 iterations
-  compilation occurred before 75155186 iterations
-  compilation occurred before 79353796 iterations
-  compilation occurred before 79773657 iterations
-  compilation occurred before 106224900 iterations
-  compilation occurred before 106644761 iterations
-  compilation occurred before 107064622 iterations
-  compilation occurred before 131836421 iterations
-  compilation occurred before 133096004 iterations
-  compilation occurred before 135195309 iterations
-  compilation occurred before 152829471 iterations
-  compilation occurred before 153249332 iterations
-  compilation occurred before 153669193 iterations
-  compilation occurred before 158287664 iterations
-  compilation occurred before 160806830 iterations
-  compilation occurred before 169204050 iterations
-  compilation occurred before 176341687 iterations
-  compilation occurred before 214549038 iterations
-  compilation occurred before 237641393 iterations
-  compilation occurred before 276688466 iterations
-  compilation occurred before 277108327 iterations
-  compilation occurred before 277528188 iterations
-  compilation occurred before 321193732 iterations
-  compilation occurred before 400967322 iterations
-  compilation occurred before 414822735 iterations
-  compilation occurred before 421960372 iterations
-  compilation occurred before 423219955 iterations
-  compilation occurred before 485359383 iterations
-  compilation occurred before 520627707 iterations
-  compilation occurred before 563033668 iterations
-  compilation occurred before 702007659 iterations
-  compilation occurred before 938389402 iterations
-  compilation occurred before 946366761 iterations
-  compilation occurred before 971978282 iterations
-  compilation occurred before 988352861 iterations
-  compilation occurred before 1022781463 iterations
-  compilation occurred before 1053851177 iterations
-  compilation occurred before 1055950482 iterations
-  compilation occurred before 1095837277 iterations
-  compilation occurred before 1097516721 iterations
-  compilation occurred before 1126906991 iterations
-  compilation occurred before 1127326852 iterations
-  compilation occurred before 1127746713 iterations
-  compilation occurred before 1138663099 iterations
-  compilation occurred before 1181069060 iterations
+  compilation occurred before 454260 iterations
+  compilation occurred before 908441 iterations
+  compilation occurred before 1362622 iterations
+  compilation occurred before 1816803 iterations
+  compilation occurred before 3179346 iterations
+  compilation occurred before 5904432 iterations
+  compilation occurred before 8629518 iterations
+  compilation occurred before 11354604 iterations
+  compilation occurred before 11808785 iterations
+  compilation occurred before 20438224 iterations
+  compilation occurred before 24980034 iterations
+  compilation occurred before 25888396 iterations
+  compilation occurred before 27705120 iterations
+  compilation occurred before 28613482 iterations
+  compilation occurred before 34063654 iterations
+  compilation occurred before 48143265 iterations
+  compilation occurred before 49505808 iterations
+  compilation occurred before 56318523 iterations
+  compilation occurred before 57681066 iterations
+  compilation occurred before 65856324 iterations
+  compilation occurred before 73577401 iterations
+  compilation occurred before 80390116 iterations
+  compilation occurred before 85840288 iterations
+  compilation occurred before 86294469 iterations
+  compilation occurred before 114453691 iterations
+  compilation occurred before 114907872 iterations
+  compilation occurred before 115362053 iterations
+  compilation occurred before 116270415 iterations
+  compilation occurred before 145337999 iterations
+  compilation occurred before 148063085 iterations
+  compilation occurred before 173951402 iterations
+  compilation occurred before 177130669 iterations
+  compilation occurred before 177584850 iterations
+  compilation occurred before 183035022 iterations
+  compilation occurred before 183489203 iterations
+  compilation occurred before 190301918 iterations
+  compilation occurred before 232086570 iterations
+  compilation occurred before 253433077 iterations
+  compilation occurred before 257066525 iterations
+  compilation occurred before 257520706 iterations
+  compilation occurred before 298851177 iterations
+  compilation occurred before 299305358 iterations
+  compilation occurred before 322468589 iterations
+  compilation occurred before 433742934 iterations
+  compilation occurred before 448730907 iterations
+  compilation occurred before 456451984 iterations
+  compilation occurred before 457814527 iterations
+  compilation occurred before 498690817 iterations
+  compilation occurred before 525487496 iterations
+  compilation occurred before 563184519 iterations
+  compilation occurred before 609056800 iterations
+  compilation occurred before 759390711 iterations
+  compilation occurred before 1009190261 iterations
+  compilation occurred before 1023269872 iterations
+  compilation occurred before 1051429094 iterations
+  compilation occurred before 1068687972 iterations
+  compilation occurred before 1142265294 iterations
+  compilation occurred before 1159524172 iterations
+  compilation occurred before 1159978353 iterations
+  compilation occurred before 1169516154 iterations
+  compilation occurred before 1169970335 iterations
+  compilation occurred before 1170424516 iterations
+  compilation occurred before 1187229213 iterations
+  compilation occurred before 1187683394 iterations
 Estimating execution count ...
 Sampling ...
 Final GC...
@@ -185,38 +224,8 @@ Checking GC...
 Finding outliers ...
 Bootstrapping ...
 Checking outlier significance
-Warming up for JIT optimisations 10000000000 ...
-  compilation occurred before 30 iterations
-  compilation occurred before 178769 iterations
-  compilation occurred before 357508 iterations
-  compilation occurred before 1251203 iterations
-  compilation occurred before 1608681 iterations
-  compilation occurred before 1787420 iterations
-  compilation occurred before 3038593 iterations
-  compilation occurred before 3574810 iterations
-  compilation occurred before 10903109 iterations
-  compilation occurred before 25023490 iterations
-  compilation occurred before 28598270 iterations
-  compilation occurred before 62379941 iterations
-  compilation occurred before 63094897 iterations
-  compilation occurred before 81683753 iterations
-  compilation occurred before 81862492 iterations
-  compilation occurred before 82041231 iterations
-  compilation occurred before 173019382 iterations
-  compilation occurred before 173198121 iterations
-  compilation occurred before 173376860 iterations
-  compilation occurred before 416283161 iterations
-  compilation occurred before 421109114 iterations
-  compilation occurred before 423790199 iterations
-  compilation occurred before 448456181 iterations
-  compilation occurred before 448813659 iterations
-  compilation occurred before 449886093 iterations
-  compilation occurred before 472407207 iterations
-  compilation occurred before 475981987 iterations
-  compilation occurred before 476160726 iterations
-  compilation occurred before 489923629 iterations
-  compilation occurred before 499039318 iterations
-  compilation occurred before 1051164089 iterations
+Warming up for JIT optimisations 5000000000 ...
+  compilation occurred before 10 iterations
 Estimating execution count ...
 Sampling ...
 Final GC...
@@ -224,16 +233,93 @@ Checking GC...
 Finding outliers ...
 Bootstrapping ...
 Checking outlier significance
-x86_64 Mac OS X 14.3 8 cpu(s)
-OpenJDK 64-Bit Server VM 21.0.1+12-LTS
-Runtime arguments: -Dclassworlds.conf=/usr/local/Cellar/maven/3.9.6/libexec/bin/m2.conf -Dmaven.home=/usr/local/Cellar/maven/3.9.6/libexec -Dlibrary.jansi.path=/usr/local/Cellar/maven/3.9.6/libexec/lib/jansi-native -Dmaven.multiModuleProjectDirectory=/Users/ambrose/Projects/criterium-from-java
-Evaluation count : 17667680220 in 60 samples of 294461337 calls.
-Done!
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 103.210107 ms
+    Execution time std-deviation : 1.784294 ms
+   Execution time lower quantile : 100.184480 ms ( 2.5%)
+   Execution time upper quantile : 104.768084 ms (97.5%)
+                   Overhead used : 8.451731 ns
+To reproduce via bench(Callable, String), use: "{\"progress\" true, \"target-execution-time\" 100000000, \"max-gc-attempts\" 100, \"print-result\" true, \"warmup-jit-period\" 5000000000, \"quick\" true, \"overhead\" 8.451731464212423E-9, \"bootstrap-size\" 500, \"tail-quantile\" 0.025, \"verbose\" true, \"samples\" 6}"
+
+Result:
+{"os-details"
+ {"arch" "x86_64",
+  "available-processors" 8,
+  "name" "Mac OS X",
+  "version" "14.3"},
+ "execution-count" 1,
+ "mean" [0.10321010683333333 [0.10135429133333333 0.104280358]],
+ "serialized-options"
+ "{\"progress\" true, \"target-execution-time\" 100000000, \"max-gc-attempts\" 100, \"print-result\" true, \"warmup-jit-period\" 5000000000, \"quick\" true, \"overhead\" 8.451731464212423E-9, \"bootstrap-size\" 500, \"tail-quantile\" 0.025, \"verbose\" true, \"samples\" 6}",
+ "total-time" 0.620001001,
+ "upper-q" [0.10476808400000001 [0.10388682562500001 0.104810285]],
+ "sample-count" 6,
+ "sample-mean"
+ [0.10333350016666668 [0.09809736797918299 0.10856963235415036]],
+ "results" [20 20 20 20 20 20],
+ "outliers"
+ {"low-severe" 0, "low-mild" 0, "high-mild" 0, "high-severe" 0},
+ "warmup-executions" 55,
+ "runtime-details"
+ {"input-arguments"
+  ["-Dclassworlds.conf=/usr/local/Cellar/maven/3.9.6/libexec/bin/m2.conf"
+   "-Dmaven.home=/usr/local/Cellar/maven/3.9.6/libexec"
+   "-Dlibrary.jansi.path=/usr/local/Cellar/maven/3.9.6/libexec/lib/jansi-native"
+   "-Dmaven.multiModuleProjectDirectory=/Users/ambrose/Projects/criterium-from-java"],
+  "java-runtime-version" "21.0.1+12-LTS",
+  "clojure-version"
+  {"major" 1, "minor" 11, "incremental" 1, "qualifier" nil},
+  "vm-vendor" "Eclipse Adoptium",
+  "vm-name" "OpenJDK 64-Bit Server VM",
+  "spec-name" "Java Virtual Machine Specification",
+  "vm-version" "21.0.1+12-LTS",
+  "name" "33018@AmbrosesMBP2020.lan",
+  "java-version" "21.0.1",
+  "spec-vendor" "Oracle Corporation",
+  "sun-arch-data-model" "64",
+  "clojure-version-string" "1.11.1",
+  "spec-version" "21"},
+ "sample-variance" [3.046342253866968E-6 [0.0 0.0]],
+ "outlier-variance" 0.13888888888888873,
+ "final-gc-time" 76400143,
+ "lower-q" [0.10018448 [0.10018448 0.10257754300000001]],
+ "warmup-time" 5709716578,
+ "overhead" 8.451731464212423E-9,
+ "variance"
+ [3.1837051655162608E-6 [3.060973957574988E-7 5.718892606608664E-6]],
+ "options"
+ {"progress" true,
+  "target-execution-time" 100000000,
+  "max-gc-attempts" 100,
+  "print-result" true,
+  "warmup-jit-period" 5000000000,
+  "quick" true,
+  "overhead" 8.451731464212423E-9,
+  "bootstrap-size" 500,
+  "tail-quantile" 0.025,
+  "verbose" true,
+  "samples" 6},
+ "tail-quantile" 0.025,
+ "samples"
+ [100184480 103905666 104768084 102577543 104810285 103754943]}
+
+Returns a map of results for programmatic manipulation.
+For example, benchmark run 5 return this value:
+20
+
+We can reproduce the same benchmark by copy-pasting the above serialized config string into the Java program.
+Evaluation count : 6 in 6 samples of 1 calls.
+             Execution time mean : 103.172682 ms
+    Execution time std-deviation : 1.125590 ms
+   Execution time lower quantile : 101.893942 ms ( 2.5%)
+   Execution time upper quantile : 104.607670 ms (97.5%)
+                   Overhead used : 8.253211 ns
+To reproduce via bench(Callable, String), use: "{\"quick\" true, \"max-gc-attempts\" 100, \"samples\" 6, \"target-execution-time\" 100000000, \"warmup-jit-period\" 5000000000, \"tail-quantile\" 0.025, \"bootstrap-size\" 500, \"overhead\" 8.253210752367998E-9}"
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  01:32 min
-[INFO] Finished at: 2024-04-06T10:20:30-05:00
+[INFO] Total time:  34.252 s
+[INFO] Finished at: 2024-04-07T01:13:16-05:00
 [INFO] ------------------------------------------------------------------------
 ```
 

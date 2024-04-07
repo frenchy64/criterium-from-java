@@ -58,13 +58,23 @@ public class Criterium {
         return 10*2;
       }
     };
-    Map benchResults = bench(myBench, "{:print-result true :print-raw-result true :quick true}");
+
+    // takes a configuration map as described in Criterium class javadoc.
+    final Map<Object,Object> config = new HashMap<Object,Object>();
+    config.put("quick", true);
+    config.put("print-result", true);
+    config.put("verbose", true);
+    config.put("progress", true);
+    Map benchResults = bench(myBench, config);
+
     System.out.println("\nReturns a map of results for programmatic manipulation.");
     System.out.println("For example, benchmark run 5 return this value:");
     List results = (List)benchResults.get("results");
     System.out.println(results.get(4).toString());
 
     System.out.println("\nWe can reproduce the same benchmark by copy-pasting the above serialized config string into the Java program.");
+
+    // also takes Clojure data, useful to reproduce previous results.
     bench(myBench,
         "{\"quick\" true, \"max-gc-attempts\" 100, \"samples\" 6, \"target-execution-time\" 100000000, \"warmup-jit-period\" 5000000000, \"tail-quantile\" 0.025, \"bootstrap-size\" 500, \"overhead\" 8.253210752367998E-9}");
   }
@@ -76,7 +86,6 @@ public class Criterium {
    **/
   public static Map<Object,Object> quickBench(Callable r) {
     final Map<Object,Object> config = new HashMap<Object,Object>();
-    config.put("quick", true);
     return bench(r, config);
   }
 
@@ -87,8 +96,6 @@ public class Criterium {
    **/
   public static Map<Object,Object> bench(Callable r) {
     final Map<Object,Object> config = new HashMap<Object,Object>();
-    //config.put("verbose", true);
-    //config.put("progress", true);
     return bench(r, config);
   }
 
@@ -148,13 +155,13 @@ public class Criterium {
   private static Object read(String s) {
     IFn evalVar = Clojure.var("clojure.core", "eval");
     IFn readStringVar = Clojure.var("clojure.core", "read-string");
-    IFn readIn = (IFn)evalVar.invoke(readStringVar.invoke("(clojure.core/fn [s] (clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/read-string s)))"));
+    IFn readIn = (IFn)evalVar.invoke(readStringVar.invoke("(clojure.core/fn [s] (clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'com.ambrosebs.criterium_from_java)] (clojure.core/read-string s)))"));
     return readIn.invoke(s);
   }
 
   private static Object eval(String s) {
     IFn evalVar = Clojure.var("clojure.core", "eval");
     IFn prStrVar = Clojure.var("clojure.core", "pr-str");
-    return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'crit-bench.main)] (clojure.core/eval '(clojure.core/ns crit-bench.main (:require [clojure.edn :as edn] [clojure.walk :as walk] [criterium.core :as b] [clojure.pprint :as pp]) (:import [java.util.concurrent Callable]))) (clojure.core/eval (clojure.core/read-string "+(String)prStrVar.invoke(s)+")))"));
+    return evalVar.invoke(read("(clojure.core/binding [clojure.core/*ns* (clojure.core/create-ns 'com.ambrosebs.criterium_from_java)] (clojure.core/eval '(clojure.core/ns com.ambrosebs.criterium_from_java (:require [clojure.edn :as edn] [clojure.walk :as walk] [criterium.core :as b] [clojure.pprint :as pp]) (:import [java.util.concurrent Callable]))) (clojure.core/eval (clojure.core/read-string "+(String)prStrVar.invoke(s)+")))"));
   }
 }
