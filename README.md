@@ -56,7 +56,7 @@ public class Main {
 
 There is an example benchmark that is run via Maven. The code looks like this:
 
-```
+```java
   /**
    * Example benchmark of (* 10 2) in Clojure.
    *
