@@ -46,7 +46,7 @@ import java.util.concurrent.Callable;
 public class Criterium {
 
   /**
-   * Example benchmark of (* 10 2) in Clojure.
+   * Example benchmark
    *
    * Demonstrates how to use bench(Callable) to kick off benchmarking.
    **/

@@ -7,23 +7,29 @@ This project packages it up for use from other JVM languages.
 
 ## API
 
-There is one public method `Criterium.bench(Callable)`. It takes a runnable that
-runs the benchmark. You should initialize your benchmark (if appropriate) before returning the Callable.
+The main public method is `Criterium.bench(Callable)`. It takes a callable that
+executes the benchmark. You should initialize your benchmark (if appropriate) before returning the Callable.
+
+[Example](test-project/java/example_benchmark/Main.java):
 
 ```java
 package example_benchmark;
 
 import com.ambrosebs.criterium_from_java.Criterium;
+import java.util.concurrent.Callable;
+import java.util.Map;
 
 public class Main {
   public static void main(String[] args) {
-    Criterium.bench(new Callable() {
+    Map benchResults = Criterium.quickBench(new Callable<Integer>() {
       @Override
-      public void run() {
-        java.util.UUID.randomUUID();
-        ("string"+"concatenation"+"benchmark").length();
+      public Integer call() throws InterruptedException {
+        Thread.sleep(100);
+        return 10*2;
       }
     });
+    System.out.println("Results:");
+    System.out.println(benchResults.toString());
   }
 }
 ```
@@ -58,7 +64,7 @@ There is an example benchmark that is run via Maven. The code looks like this:
 
 ```java
   /**
-   * Example benchmark of (* 10 2) in Clojure.
+   * Example benchmark
    *
    * Demonstrates how to use bench(Callable) to kick off benchmarking.
    **/
